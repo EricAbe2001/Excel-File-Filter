@@ -81,8 +81,8 @@ def compare_excel_files(file_a_path, file_b_path, output_file_path):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-file_a = "Superstore Original Copy.xlsx"
-file_b = "Superstore Updated.xlsx"
+file_a = "file_a.xlsx"
+file_b = "file_b.xlsx"
 output_file = "comparison_output.xlsx" 
 
 compare_excel_files(file_a, file_b, output_file)
