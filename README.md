@@ -11,7 +11,7 @@ This script uses the `pandas` and `openpyxl` libraries to efficiently compare tw
 * **Outputs Changed Rows Only:** The output file only contains rows with at least one change.
 * **Handles Different Dimensions:** Works with Excel files having varying row and column counts.
 * **Empty File Handling:** Gracefully handles cases where one or both input files are empty.
-* **Metadata Tracking:**  Keeps track of the last modification time and comparison count.
+* **Metadata Tracking:**  Keeps track of the last modification time of the output fil, comparison count,and the last modification time of File B.
 
 ## Requirements
 
