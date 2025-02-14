@@ -28,17 +28,17 @@ def compare_excel_files(file_a_path, file_b_path, output_file_path):
         output_row = 1
 
         for row in range(max_rows):
-            row_has_difference = False  # Flag to track if the current row has any differences
+            row_has_difference = False  
             for col in range(max_cols):
                 if row < df_a.shape[0] and col < df_a.shape[1] and row < df_b.shape[0] and col < df_b.shape[1]:
                     cell_a_value = str(df_a.iloc[row, col])
                     cell_b_value = str(df_b.iloc[row, col])
 
                     if cell_a_value != cell_b_value:
-                        row_has_difference = True  # Set the flag if a difference is found
+                        row_has_difference = True  
 
-            if row_has_difference: # Write the row only if a difference was found
-                for col in range(max_cols): # Iterate through all columns again to write the whole row
+            if row_has_difference: 
+                for col in range(max_cols): 
                     if row < df_a.shape[0] and col < df_a.shape[1] and row < df_b.shape[0] and col < df_b.shape[1]:
                         cell_a_value = str(df_a.iloc[row, col])
                         cell_b_value = str(df_b.iloc[row, col])
@@ -47,10 +47,15 @@ def compare_excel_files(file_a_path, file_b_path, output_file_path):
                             red_fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
                             ws.cell(row=output_row, column=col + 1).fill = red_fill
                     else:
-                        ws.cell(row=output_row, column=col + 1, value="") # Handle out of bounds by writing blank
+                        ws.cell(row=output_row, column=col + 1, value="") 
                 output_row += 1
 
+       
+        last_modified_file_b = os.path.getmtime(file_b_path)  # Get timestamp
+        last_modified_datetime_file_b = datetime.fromtimestamp(last_modified_file_b)
+
         metadata_file = "comparison_metadata.txt"
+
 
         if os.path.exists(metadata_file):
             with open(metadata_file, "r", encoding="utf-8") as f:
@@ -60,9 +65,15 @@ def compare_excel_files(file_a_path, file_b_path, output_file_path):
                 except ValueError:
                     last_modified = datetime.now()
                 modification_count = int(f.readline().strip())
+                last_modified_file_b_stored = f.readline().strip()
+                try:
+                    last_modified_file_b_stored = datetime.strptime(last_modified_file_b_stored, "%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    last_modified_file_b_stored = datetime.now()
         else:
             last_modified = datetime.now()
             modification_count = 0
+            last_modified_file_b_stored = last_modified_datetime_file_b
 
         last_modified = datetime.now()
         modification_count += 1
@@ -70,11 +81,13 @@ def compare_excel_files(file_a_path, file_b_path, output_file_path):
         with open(metadata_file, "w", encoding="utf-8") as f:
             f.write(last_modified.strftime("%Y-%m-%d %H:%M:%S") + "\n")
             f.write(str(modification_count) + "\n")
+            f.write(last_modified_datetime_file_b.strftime("%Y-%m-%d %H:%M:%S") + "\n")
 
         wb.save(output_file_path)
         print(f"Comparison complete. Differences highlighted in {output_file_path}")
         print(f"Last modified: {last_modified.strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"Modification count: {modification_count}")
+        print(f"Last modified of File B: {last_modified_datetime_file_b.strftime('%Y-%m-%d %H:%M:%S')}")
 
     except FileNotFoundError:
         print(f"Error: One or both files not found. Paths: {file_a_path}, {file_b_path}")
